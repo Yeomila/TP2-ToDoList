@@ -8,7 +8,7 @@
 
     <input type="text" id="tarea" placeholder="Nueva tarea">
     <button onclick="agregar()">Agregar</button>
-    <button onclick="findFastestTask()">Tarea más rápida</button>
+    <button onclick="masRapida()">Tarea más rápida</button>
 
     <ul id="lista">
     </ul>
@@ -77,22 +77,18 @@
         }
 
         
-        function findFastestTask() {
-            if (tareas.length === 0) {
-                alert('No hay tareas para analizar.');
-                return;
-            }
-
-            let fastestTask = tareas[0];
+        function masRapida() {
+            
+            let masRapidaActual = tareas[0];
             tareas.forEach(function (tarea) {
-                const fastestTime = new Date(fastestTask.created);
-                const currentTime = new Date(tarea.created);
-                if (currentTime < fastestTime) {
-                    fastestTask = tarea;
+                const fastestTime = new Date(masRapidaActual.completedAt);
+                const currentTime = new Date(tarea.completedAt);
+                if (currentTime > fastestTime) {
+                    masRapidaActual = tarea;
                 }
             });
 
-            alert('La tarea más rápida en realizarse fue: ' + fastestTask.text);
+            alert('La tarea más rápida en realizarse fue: ' + masRapidaActual.text);
         }
 
         mostrar();
