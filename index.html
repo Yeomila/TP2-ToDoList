@@ -21,11 +21,13 @@
             const TareaTexto = taskInput.value.trim();
 
             if (TareaTexto !== '') {
-                const timestamp = new Date().toLocaleString(); 
+                const timestamp = new Date(); 
                 tareas.push({ text: TareaTexto, completed: false, created: timestamp, completedAt: null }); 
 
                 mostrar(); 
             }
+
+            taskInput.value = ""
         }
 
         function mostrar() {
@@ -52,12 +54,12 @@
                 li.appendChild(taskText);
 
                 const createdTimestamp = document.createElement('span');
-                createdTimestamp.textContent = '    Creado: ' + tarea.created;
+                createdTimestamp.textContent = '    Creado: ' + tarea.created.toLocaleString();
                 li.appendChild(createdTimestamp);
 
                 if (tarea.completed) {
                     const completedTimestamp = document.createElement('span');
-                    completedTimestamp.textContent = '  Completado: ' + tarea.completedAt;
+                    completedTimestamp.textContent = '  Completado: ' + tarea.completedAt.toLocaleString();
                     li.appendChild(completedTimestamp);
                 }
 
@@ -69,7 +71,7 @@
             const tarea = tareas[index];
             tarea.completed = !tarea.completed; 
             if (tarea.completed) {
-                tarea.completedAt = new Date().toLocaleString(); 
+                tarea.completedAt = new Date();
             } else {
                 tarea.completedAt = null; 
             }
@@ -77,19 +79,33 @@
         }
 
         
+        function secondDif(fechaCompletada, fechaEmpezado)
+        {
+            const fecha = fechaCompletada - fechaEmpezado
+            return Number(fecha / 1000);
+        }
+
         function masRapida() {
             
             let masRapidaActual = tareas[0];
+            let fechaEmpezado = Date.parse(masRapidaActual.created)
+            let fechaCompletada =  Date.parse(masRapidaActual.completedAt)
+            let difRapida = secondDif(fechaCompletada, fechaEmpezado)
+            
             tareas.forEach(function (tarea) {
-                const fastestTime = new Date(masRapidaActual.completedAt);
-                const currentTime = new Date(tarea.completedAt);
-                if (currentTime > fastestTime) {
+                fechaEmpezado = Date.parse(tarea.created)
+                fechaCompletada = Date.parse(tarea.completedAt)
+                const dif = secondDif(fechaCompletada, fechaEmpezado)
+                if (dif < difRapida) {
+                    difRapida = dif
                     masRapidaActual = tarea;
                 }
             });
 
             alert('La tarea más rápida en realizarse fue: ' + masRapidaActual.text);
         }
+
+
 
         mostrar();
     </script>
