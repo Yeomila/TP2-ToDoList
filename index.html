@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TO-DO List</title>
+</head>
+<body>
+    <h1>TO-DO List</h1>
+
+    <input type="text" id="tarea" placeholder="Nueva tarea">
+    <button onclick="agregar()">Agregar</button>
+    <button onclick="findFastestTask()">Tarea más rápida</button>
+
+    <ul id="lista">
+    </ul>
+
+    <script>
+        let tareas = [];
+
+        function agregar() {
+            const taskInput = document.getElementById('tarea');
+            const TareaTexto = taskInput.value.trim();
+
+            if (TareaTexto !== '') {
+                const timestamp = new Date().toLocaleString(); 
+                tareas.push({ text: TareaTexto, completed: false, created: timestamp, completedAt: null }); 
+
+                mostrar(); 
+            }
+        }
+
+        function mostrar() {
+            const lista = document.getElementById('lista');
+            lista.innerHTML = ''; 
+
+            tareas.forEach(function (tarea, index) {
+                const li = document.createElement('li');
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = tarea.completed;
+                checkbox.onclick = function () {
+                    toggleTaskCompleted(index);
+                };
+
+                if (tarea.completed) {
+                    li.style.textDecoration = 'line-through';
+                }
+                li.appendChild(checkbox);
+
+                const taskText = document.createElement('span');
+                taskText.textContent = tarea.text;
+                li.appendChild(taskText);
+
+                const createdTimestamp = document.createElement('span');
+                createdTimestamp.textContent = '    Creado: ' + tarea.created;
+                li.appendChild(createdTimestamp);
+
+                if (tarea.completed) {
+                    const completedTimestamp = document.createElement('span');
+                    completedTimestamp.textContent = '  Completado: ' + tarea.completedAt;
+                    li.appendChild(completedTimestamp);
+                }
+
+                lista.appendChild(li);
+            });
+        }
+
+        function toggleTaskCompleted(index) {
+            const tarea = tareas[index];
+            tarea.completed = !tarea.completed; 
+            if (tarea.completed) {
+                tarea.completedAt = new Date().toLocaleString(); 
+            } else {
+                tarea.completedAt = null; 
+            }
+            mostrar(); 
+        }
+
+        
+        function findFastestTask() {
+            if (tareas.length === 0) {
+                alert('No hay tareas para analizar.');
+                return;
+            }
+
+            let fastestTask = tareas[0];
+            tareas.forEach(function (tarea) {
+                const fastestTime = new Date(fastestTask.created);
+                const currentTime = new Date(tarea.created);
+                if (currentTime < fastestTime) {
+                    fastestTask = tarea;
+                }
+            });
+
+            alert('La tarea más rápida en realizarse fue: ' + fastestTask.text);
+        }
+
+        mostrar();
+    </script>
+</body>
+</html>
